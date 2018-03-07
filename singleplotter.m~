@@ -1,0 +1,34 @@
+filename = 'positions.csv';
+format long;
+M = csvread(filename, 1, 0);
+
+steps = size(M,1);
+
+time = M(:,1)
+% rBlue = zeros(1, steps);
+thetaBlue = zeros(1, steps);
+xBlue = M(:,2);
+yBlue = M(:,3);
+
+for i = 1:steps
+    xBlue = xBlue(i)
+    yBlue = 
+%     rBlue(i) = sqrt(xBlue^2 + yBlue^2);
+    thetaBlue(i) = atan(yBlue / xBlue);
+    
+end
+
+
+plot(time, thetaBlue)
+polarplot(thetaBlue, rBlue)
+polarplot(
+    
+% thetaBlue = 
+
+% import csv
+% read csv
+% 
+% calculate angles
+% calculate position
+% 
+% plot

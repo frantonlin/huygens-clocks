@@ -68,12 +68,6 @@ while(cap.isOpened()):
         orangeCentroidR = orangeCentroid2
         orangeCentroidL = orangeCentroid1
 
-
-    # Append positions for this frame to the data
-    time = (cap.get(cv2.CAP_PROP_POS_FRAMES) - 1)/framerate
-    data.append((time, *blueCentroid, *orangeCentroidL, *orangeCentroidR))
-
-
     # Create frame with marked centroids
     centroidim = frame.copy()
     cv2.circle(centroidim, blueCentroid, 3, (0,0,0), -1)
@@ -97,15 +91,15 @@ while(cap.isOpened()):
     cv2.imshow("review", cv2.resize(centroidim, (0, 0), None, .5, .5))
     cv2.waitKey(1)
 
+    # Append positions for this frame to the data
+    time = (cap.get(cv2.CAP_PROP_POS_FRAMES) - 1)/framerate
+    data.append((time, *orangeCentroidL, *orangeCentroidR, *blueCentroid))
 
-orangeDiff = list(map(lambda row: row[5] - row[3], data))
-print(orangeDiff)
-print(np.mean(orangeDiff))
 
 # Save the position data to a csv
-with open('positions.csv', 'w') as out:
+with open('singlepositions.csv', 'w') as out:
     writer = csv.writer(out, delimiter=',')
-    writer.writerow(['t','bluex','bluey','orangeLx','orangeLy','orangeRx','orangeRy'])
+    writer.writerow(['t','orangeLx','orangeLy','orangeRx','orangeRy','bluex','bluey'])
     for row in data:
         writer.writerow(row)
 
