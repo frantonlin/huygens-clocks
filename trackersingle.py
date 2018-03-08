@@ -4,10 +4,11 @@ import csv
 import colorsys
 
 # Variables to change
-filename = "single.mov"
+videoFileName = 'videos/single.mov'
 blueRGB = np.array([56, 134, 173])
 orangeRGB = np.array([225, 163, 70])
 framerate = 30
+dataFileName = 'data/singlepositions.csv'
 
 
 # Color bounds in HSV
@@ -24,7 +25,7 @@ orangeUpperBound = np.minimum(orangeHSV + 40, maxHSV)
 
 
 
-cap = cv2.VideoCapture(filename)
+cap = cv2.VideoCapture(videoFileName)
 data = []
 
 while(cap.isOpened()):
@@ -97,7 +98,7 @@ while(cap.isOpened()):
 
 
 # Save the position data to a csv
-with open('singlepositions.csv', 'w') as out:
+with open(dataFileName, 'w') as out:
     writer = csv.writer(out, delimiter=',')
     writer.writerow(['t','orangeLx','orangeLy','orangeRx','orangeRy','bluex','bluey'])
     for row in data:
