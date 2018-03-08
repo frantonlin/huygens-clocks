@@ -1,19 +1,22 @@
-filename = 'singlepositions.csv';
+filename = 'data/singlepositions.csv';
 format long;
-M = csvread(filename, 1, 0);
+data = csvread(filename, 1, 0);
 
-steps = size(M,1);
+time = data(:,1);
+pivotL = data(:,2:3);
+pivotR = data(:,4:5);
+pendulum = data(:,6:7);
 
-time = M(:,1);
-thetaBlue = zeros(1, steps);
-xBlue = M(:,6);
-yBlue = M(:,7);
+% Calculate pendulum length in pixels
+l = .342; % pendulum length in m
+pivotDiff = mean(pivotR(:,1) - pivotL(:,1));
+pixperm = pivotDiff / .206;
+lpix = l*pixperm;
 
-for i = 1:steps
-    x = xBlue(i);
-    y = yBlue(i);
-    thetaBlue(i) = atan(y / x);
-end
+% Calculate theta and find zero velocity "starting point"
+theta = asin((pendulum(:,1)-pivotR(:,1))/lpix);
+dtheta = diff(theta);
+posIndex = find(dtheta > 0);
+startIndex = posIndex(1);
 
-
-plot(time, thetaBlue) 
+plot(time(startIndex:end), theta(startIndex:end), time(startIndex:end-1), dtheta(startIndex:end))
