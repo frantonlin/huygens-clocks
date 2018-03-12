@@ -4,12 +4,11 @@ import csv
 import colorsys
 
 # Variables to change
-filename = "antiphase.MP4"
+filename = "videos/antiphase.MP4"
 blueRGB = np.array([65, 113, 162])
 orangeRGB = np.array([217, 175, 87])
 pinkRGB = np.array([198, 90, 124])
 framerate = 30
-
 
 # Color bounds in HSV
 maxHSV = np.array([179, 255, 255])
@@ -28,18 +27,23 @@ pinkLowerBound = np.maximum(pinkHSV - 40, minHSV)
 pinkUpperBound = np.minimum(pinkHSV + 40, maxHSV)
 
 
+# Initialize capture, data recording, and writer
 cap = cv2.VideoCapture(filename)
+height = int(cap.get(cv2.CAP_PROP_FRAME_HEIGHT))
+width = int(cap.get(cv2.CAP_PROP_FRAME_WIDTH))
 data = []
+fourcc = cv2.VideoWriter_fourcc('M', 'P', '4', 'V') # Define the codec
+video = cv2.VideoWriter('output.avi', fourcc, 20.0, (width,height))
 
 while(cap.isOpened()):
     ret, frame = cap.read()
 
     if(frame is None):
         break
-    height, width = frame.shape[:2]
+    # height, width = frame.shape[:2]
 
-    # if cap.get(cv2.CAP_PROP_POS_FRAMES) > 30:
-    #     break
+    if cap.get(cv2.CAP_PROP_POS_FRAMES) > 30:
+        break
 
     # Create masks for each colored marker
     frameHSV = cv2.cvtColor(frame, cv2.COLOR_BGR2HSV)
@@ -103,13 +107,22 @@ while(cap.isOpened()):
     cv2.imshow("review", cv2.resize(centroidim, (0, 0), None, .5, .5))
     cv2.waitKey(1)
 
+    # write frames to video
+    if ret == True:
+
+        # Write the frame into the file 'output.avi'
+        video.write(centroidim)
+
+    else:
+        break
+
     # Append positions for this frame to the data
     time = (cap.get(cv2.CAP_PROP_POS_FRAMES) - 1)/framerate
     data.append((time, *orangeCentroidL, *orangeCentroidR, *blueCentroid, *pinkCentroid))
 
 
 # Save the position data to a csv
-with open('antiphasepositions.csv', 'w') as out:
+with open('data/antiphasepositionsTEST.csv', 'w') as out:
     writer = csv.writer(out, delimiter=',')
     writer.writerow(['t','orangeLx','orangeLy', 'orangeRx', 'orangeRy','bluex','bluey','pinkx','pinky'])
     for row in data:
@@ -117,4 +130,5 @@ with open('antiphasepositions.csv', 'w') as out:
 
 # cleanup opencv
 cap.release()
+video.release()
 cv2.destroyAllWindows()
