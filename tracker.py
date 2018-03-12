@@ -32,8 +32,8 @@ cap = cv2.VideoCapture(filename)
 height = int(cap.get(cv2.CAP_PROP_FRAME_HEIGHT))
 width = int(cap.get(cv2.CAP_PROP_FRAME_WIDTH))
 data = []
-fourcc = cv2.VideoWriter_fourcc('M', 'P', '4', 'V') # Define the codec
-video = cv2.VideoWriter('output.avi', fourcc, 20.0, (width,height))
+fourcc = cv2.VideoWriter_fourcc('a', 'v', 'c', '1') # Define the codec
+video = cv2.VideoWriter('output.mp4', fourcc, 20.0, (width,height))
 
 while(cap.isOpened()):
     ret, frame = cap.read()
